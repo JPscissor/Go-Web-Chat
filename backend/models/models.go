@@ -1,5 +1,10 @@
 package models
 
+type Client struct {
+	Nickname string
+	IP       string
+}
+
 // Message представляет серверное сообщение, отправляемое клиентам по WS
 type Message struct {
 	Nickname string `json:"nickname"`

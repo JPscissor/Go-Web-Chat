@@ -2,6 +2,7 @@ package handlers
 
 import (
 	"chat-room/backend/config"
+	"chat-room/backend/models"
 	"log"
 	"math/rand"
 	"net/http"
@@ -36,7 +37,7 @@ func getRandNickname() string {
 	for i := range digits {
 		digits[i] = byte(rand.Intn(10)) + '0'
 	}
-	randNick := "новый пользователь чата" + string(digits)
+	randNick := "Новый пользователь чата " + string(digits)
 
 	return randNick
 }
@@ -54,17 +55,17 @@ func isNickAdmin(value string) bool {
 	return value == "Система"
 }
 
-func registerClient(ws *websocket.Conn, nickname string) {
+func registerClient(ws *websocket.Conn, client models.Client) {
 	config.ClientsMu.Lock()
-	config.Clients[ws] = nickname
+	config.Clients[ws] = client
 	config.ClientsMu.Unlock()
-	log.Printf("%s connected!", nickname)
+	log.Printf("%s connected!", client.Nickname)
 }
 
 func unregisterClient(ws *websocket.Conn) {
 	config.ClientsMu.Lock()
-	nickname := config.Clients[ws]
+	client := config.Clients[ws]
 	delete(config.Clients, ws)
 	config.ClientsMu.Unlock()
-	log.Printf("%s disconnected!", nickname)
+	log.Printf("%s disconnected!", client.Nickname)
 }
