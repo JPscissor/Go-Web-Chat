@@ -59,7 +59,7 @@ func registerClient(ws *websocket.Conn, client models.Client) {
 	config.ClientsMu.Lock()
 	config.Clients[ws] = client
 	config.ClientsMu.Unlock()
-	log.Printf("%s connected!", client.Nickname)
+	log.Printf("%s connected! (%s) ", client.Nickname, client.IP)
 }
 
 func unregisterClient(ws *websocket.Conn) {
