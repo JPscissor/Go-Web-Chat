@@ -29,6 +29,7 @@ func main() {
 	http.HandleFunc("/upload", handlers.HandleImageUpload)
 	http.HandleFunc("/upload-file", handlers.HandleFileUpload)
 	http.HandleFunc("/uploads/", handlers.ServeUploadedFiles)
+	// http.HandleFunc("/admin/")
 
 	config.ServeFrontend()
 
