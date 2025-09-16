@@ -9,7 +9,7 @@ import (
 )
 
 var (
-	Clients   = make(map[*websocket.Conn]Client)
+	Clients   = make(map[*websocket.Conn]models.Client)
 	ClientsMu sync.Mutex
 	Broadcast = make(chan models.Message)
 	Upgrader  = websocket.Upgrader{

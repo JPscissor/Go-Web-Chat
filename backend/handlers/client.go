@@ -42,9 +42,9 @@ func getRandNickname() string {
 	return randNick
 }
 
-func isNickTaken(value string) bool {
-	for _, v := range config.Clients {
-		if v == value {
+func isNickTaken(nick string) bool {
+	for _, cl := range config.Clients {
+		if cl.Nickname == nick {
 			return true
 		}
 	}
