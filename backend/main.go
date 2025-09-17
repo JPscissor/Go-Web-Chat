@@ -7,9 +7,15 @@ import (
 	"log"
 	"net/http"
 	"os"
+
+	"github.com/joho/godotenv"
 )
 
 func main() {
+
+	if err := godotenv.Load(); err != nil {
+		log.Println("No .env file found")
+	}
 
 	store, err := storage.New(os.Getenv("DB_URL"))
 	if err != nil {
@@ -34,6 +40,6 @@ func main() {
 	config.ServeFrontend()
 
 	//port := config.GetPort()
-	log.Printf("Server started")
+	log.Printf("Server started on 10.93.175.24:6868")
 	log.Fatal(http.ListenAndServe("0.0.0.0:6868", nil))
 }

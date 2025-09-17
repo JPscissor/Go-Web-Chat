@@ -3,6 +3,7 @@ package handlers
 import (
 	"chat-room/backend/config"
 	"chat-room/backend/models"
+	"chat-room/backend/zombie"
 	"log"
 	"net"
 	"net/http"
@@ -19,9 +20,18 @@ func HandleConnections(w http.ResponseWriter, r *http.Request) {
 	}
 	defer ws.Close()
 
+	nck := getNickname(r)
+	ip := getClientIP(r)
+	zmb := zombie.IsZombie(getClientIP(r))
+
+	if zombie.IsZombie(getClientIP(r)) {
+		nck = "Зомби " + nck
+	}
+
 	client := models.Client{
-		Nickname: getNickname(r),
-		IP:       getClientIP(r),
+		Nickname: nck,
+		IP:       ip,
+		Zombie:   zmb,
 	}
 
 	registerClient(ws, client)
@@ -39,7 +49,6 @@ func upgradeConnection(w http.ResponseWriter, r *http.Request) (*websocket.Conn,
 }
 
 func getClientIP(r *http.Request) string {
-	// Проверяем заголовки, которые могут быть установлены прокси (например, nginx, Cloudflare)
 	headers := []string{
 		"X-Forwarded-For",
 		"X-Real-Ip",
@@ -47,14 +56,12 @@ func getClientIP(r *http.Request) string {
 
 	for _, header := range headers {
 		if ip := r.Header.Get(header); ip != "" {
-			// X-Forwarded-For может содержать список IP через запятую
 			if ips := strings.Split(ip, ","); len(ips) > 0 {
 				return strings.TrimSpace(ips[0])
 			}
 		}
 	}
 
-	// Если прокси нет — берём напрямую из удалённого адреса
 	ip, _, err := net.SplitHostPort(r.RemoteAddr)
 	if err != nil {
 		return "unknown"
