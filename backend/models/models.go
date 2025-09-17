@@ -3,7 +3,7 @@ package models
 type Client struct {
 	Nickname string
 	IP       string
-	Zombie   bool
+	IsZombie bool
 }
 
 type Message struct {

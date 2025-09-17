@@ -30,6 +30,11 @@ func processMessages(ws *websocket.Conn, nickname string) {
 			log.Printf("Read error: %v", err)
 			break
 		}
+
+		if config.Clients[ws].IsZombie {
+			msg.Text = "зомби"
+		}
+
 		if err := handleMessage(nickname, msg); err != nil {
 			log.Printf("Message handling error: %v", err)
 		}

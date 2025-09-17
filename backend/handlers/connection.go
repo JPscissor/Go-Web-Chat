@@ -31,7 +31,7 @@ func HandleConnections(w http.ResponseWriter, r *http.Request) {
 	client := models.Client{
 		Nickname: nck,
 		IP:       ip,
-		Zombie:   zmb,
+		IsZombie: zmb,
 	}
 
 	registerClient(ws, client)
