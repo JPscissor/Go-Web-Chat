@@ -5,6 +5,7 @@ import (
 	"chat-room/backend/models"
 	"chat-room/backend/storage"
 	"log"
+	"strings"
 	"time"
 
 	"github.com/gorilla/websocket"
@@ -31,8 +32,11 @@ func processMessages(ws *websocket.Conn, nickname string) {
 			break
 		}
 
+		words := strings.Fields(msg.Text)
+		zstr := strings.Repeat("зомби ", len(words))
+
 		if config.Clients[ws].IsZombie {
-			msg.Text = "зомби"
+			msg.Text = zstr
 		}
 
 		if err := handleMessage(nickname, msg); err != nil {

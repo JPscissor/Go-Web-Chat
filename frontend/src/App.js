@@ -14,6 +14,7 @@ function App() {
   const messagesEndRef = useRef(null);
   const fileInputRef = useRef(null);
   const anyFileInputRef = useRef(null);
+  const hasSyncedRef = useRef(false);
 
   const scrollToBottom = () => {
     messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
@@ -39,6 +40,24 @@ function App() {
     ws.current.onmessage = (e) => {
       try {
         const data = JSON.parse(e.data);
+
+        // Одноразовая синхронизация ника по системному сообщению «... подключился к чату»
+        if (
+          !hasSyncedRef.current &&
+          data && data.nickname === "Система" &&
+          typeof data.text === 'string' &&
+          data.text.endsWith("подключился к чату")
+        ) {
+          const assigned = data.text.replace(/ подключился к чату$/, '');
+          setNickname(prev => {
+            if (assigned === prev || assigned.endsWith(' ' + prev)) {
+              hasSyncedRef.current = true;
+              return assigned;
+            }
+            return prev;
+          });
+        }
+
         setMessages(prev => [...prev, {
           nickname: data.nickname,
           text: data.text,
@@ -239,7 +258,7 @@ function App() {
                 key={index}
                 className={`message-wrapper ${
                   msg.nickname === "Система" ? 'system' :
-                  msg.nickname === nickname ? 'own' : 'other'
+                  (msg.nickname === nickname || (typeof nickname === 'string' && nickname && msg.nickname && msg.nickname.endsWith(' ' + nickname))) ? 'own' : 'other'
                 }`}
               >
                 <div className="message">
