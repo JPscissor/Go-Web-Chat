@@ -6,7 +6,7 @@ import (
 	"os"
 )
 
-var BldPath = "/home/student210/Документы/Zhuravlev22-40/docs/Go-WebChat/frontend/build"
+var BldPath = "../frontend/build"
 
 func ServeFrontend() {
 	if _, err := os.Stat(BldPath); os.IsNotExist(err) {
